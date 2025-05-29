@@ -10,14 +10,14 @@ function Protected() {
     const navigate=useNavigate()
     const [isAunthenticatd, setIsAuthenticated]= useState();
     useEffect(()=>{
-        axios.post('http://localhost:4000/verify-user', {user_id:localStorage.getItem('userId')},{
+        axios.post('http://localhost:4000/verify-user', {},{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         } )
         .then((res)=>{
-            console.log(res.data.status)
-            if(res.data.status==='success'){
+            console.log(res.data.message)
+            if(res.data.message==='success'){
                 setIsAuthenticated(true);
             }
             else{

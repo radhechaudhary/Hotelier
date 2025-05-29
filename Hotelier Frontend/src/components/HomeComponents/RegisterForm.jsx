@@ -25,7 +25,6 @@ function RegisterForm() {
   const SendOtp = () => {
     alert("Otp sent to your email");
     setOtpSent(true);
-    axios.post();
   };
   const VerifyOtp = () => {
     setOtpVerified(true);
@@ -35,6 +34,7 @@ function RegisterForm() {
     axios
       .post("http://localhost:4000/signup", formData) // sending form Data to backend
       .then((res) => {
+        console.log(res.data.message)
         if (res.data.message === "success") { 
           //if the backend message is success save the data to localStorage and navigate to dashboard  
           localStorage.setItem("userId", res.data.user_id);

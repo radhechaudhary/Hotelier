@@ -116,7 +116,7 @@ function App() {
             },
           }
         )
-        .then()
+        .then(()=>{})
         .catch((err) => {
           console.log(err);
         });

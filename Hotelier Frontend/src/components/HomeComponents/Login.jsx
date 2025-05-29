@@ -26,28 +26,30 @@ function Login() {
         password: password,
       })
       .then((res) => {
-        if (res.data.status === "success") {
+        if (res.data.message === "success") {
           //setting the values to localStorage  
           localStorage.setItem("token", res.data.values.token);
           localStorage.setItem("userId", userId);
           localStorage.setItem("staff", JSON.stringify(res.data.values.staff));
           localStorage.setItem("rooms", JSON.stringify(res.data.values.rooms));
           localStorage.setItem("hotel", res.data.values.hotel);
-          localStorage.setItem(
-            "weekData",
-            JSON.stringify(res.data.values.report.weekData)
-          );
-          localStorage.setItem(
-            "monthData",
-            JSON.stringify(res.data.values.report.monthData)
-          );
-          localStorage.setItem(
-            "yearData",
-            JSON.stringify(res.data.values.report.yearData)
-          );
+          if(Object.keys(res.data.values.report).lenght>0){
+            localStorage.setItem(
+              "weekData",
+              JSON.stringify(res.data.values.report.weekData)
+            );
+            localStorage.setItem(
+              "monthData",
+              JSON.stringify(res.data.values.report.monthData)
+            );
+            localStorage.setItem(
+              "yearData",
+              JSON.stringify(res.data.values.report.yearData)
+            );
+          }
           navigate("/dashboard", { replace: true });
         } else {
-          setError(res.data.status); // else set the error what we got from backend
+          setError(res.data.message); // else set the error what we got from backend
           setPassword("");
         }
       })

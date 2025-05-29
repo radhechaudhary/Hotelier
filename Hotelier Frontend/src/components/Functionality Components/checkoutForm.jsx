@@ -40,6 +40,9 @@ function CheckoutForm({ setForms }) {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+    })
+    .then((res)=>{
+      alert(res.data.message);
     });
   };
 
