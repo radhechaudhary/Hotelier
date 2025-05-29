@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {motion} from 'framer-motion'
 import { useSelector, useDispatch } from 'react-redux'
 import { setStaff } from '../../features/data.Slice';
+import axios from 'axios';
 
 function AddStaffForm(prop) {
     const dispatch=useDispatch();
@@ -17,6 +18,13 @@ function AddStaffForm(prop) {
         const formattedDate = now.toISOString().split('T')[0];
         dispatch(setStaff([...staff, {...formData, joiningDate:  formattedDate, id:staff.length} ]))
         prop.setAdding(false)
+        axios.post('http://localhost:4000/change-staff', {staff:[...staff, {...formData, joiningDate:  formattedDate, id:staff.length}]}, 
+            {
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        )
     }
   return (
     <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{ease:'easeIn'}} className='z-[1000] top-0 left-0 absolute w-screen h-screen bg-black/70 backdrop-blur-sm flex justify-center items-center'>

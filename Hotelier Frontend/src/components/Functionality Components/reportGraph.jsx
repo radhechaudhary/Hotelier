@@ -35,7 +35,7 @@ function ReportGraph({ Data, keyName }) {
       Data.forEach((value, index) => {
         count++
         sum+=value
-        arr.push({ [keyName]: index + 1, entries: value });
+        arr.push({ [keyName]: index+1, entries: value });
       });
     }
     if(count!==0)setAverage(Math.floor(sum/count));

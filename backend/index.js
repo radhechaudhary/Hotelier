@@ -63,9 +63,7 @@ app.post("/login",async (req,res)=>{  //login route
         res.json({message:"wrong password"});
       }
     }
-    
-    catch(err)
-    {
+    catch(err){
       res.json({message:"username already present"})
     }
 })
@@ -77,7 +75,6 @@ app.post('/signup', async (req, res)=>{  // signup route
   const password=req.body.Password;
   const mail=req.body.Mail;
   const address=req.body.Address
-  console.log(req.body)
   try{
     if((password.length<8) || (!password.includes("_") && !password.includes("@") && !password.includes("#") && !password.includes("&") && !password.includes("-") && !password.includes("%") && !password.includes("$") && !password.includes("*"))){
       res.json({message:"password must have 8 characters and must include symbols like @#$%*&"})
@@ -159,6 +156,11 @@ app.post("/get-data",verifyTokenMiddleware, async(req,res)=>{
         console.log(err.message)
       res.send(err.message)
     }
+})
+
+app.post("/change-staff", verifyTokenMiddleware, async(req, res)=>{
+    const staff= req.body.staff;
+    db.query('update users set staff=$1 where user_id =$2',[staff, req.user.user_id])
 })
 
 app.listen(PORT,()=>{

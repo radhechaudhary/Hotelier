@@ -1,20 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from 'framer-motion'
 import { useSelector, useDispatch } from 'react-redux'
+import { setStaff } from '../../features/data.Slice';
 import ErrorIcon from '@mui/icons-material/Error';
+import axios from 'axios';
 
 function StaffTable() {
     const dispatch=useDispatch();
     const data=useSelector(state=>state.staff)
     const [filteredData, setFilteredData] = useState([])
     const [removing, setRemoving]=useState(false);
+    const [current, setCurrent]=useState(null)
     
     useEffect(()=>{
       setFilteredData(data)
     },[data])
 
     const remove=()=>{
-
+      const staff= [...data];
+      const updatedStaff=staff.filter((employee)=>{
+        return employee.id!== current;
+      })
+      dispatch(setStaff(updatedStaff))
+      axios.post('http://localhost:4000/change-staff', {staff:updatedStaff}, 
+            {
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        )
+      setRemoving(false)
     }
 
   return (
@@ -31,13 +46,13 @@ function StaffTable() {
                    </thead>
                    <tbody>
                    {filteredData.map((employee, index) => (
-                        <tr key={index} onClick={()=>handleClick(index)} className="hover:bg-gray-50">
+                        <tr key={index} className="hover:bg-gray-50">
                           <td className="p-2 border">{employee.id}</td>
                           <td className="p-2 border">{employee.name}</td>
                           <td className="p-2 border">{employee.role}</td>
                           <td className="p-2 border">{employee.dept}</td>
                           <td className='p-2 border flex gap-2'>
-                            <button onClick={()=>{setRemoving(true)}} className='bg-rose-500 text-white font-medium rounded-lg p-1 active:scale-95 active:bg-rose-700 w-20'>Remove</button>
+                            <button onClick={()=>{setRemoving(true); setCurrent(employee.id)}} className='bg-rose-500 text-white font-medium rounded-lg p-1 active:scale-95 active:bg-rose-700 w-20'>Remove</button>
                             <button className='bg-green-500 text-white font-medium rounded-lg p-1 active:scale-95 active:bg-green-700 w-20'>Edit</button>
                           </td>
                         </tr>

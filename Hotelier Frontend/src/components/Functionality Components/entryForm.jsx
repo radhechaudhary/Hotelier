@@ -68,7 +68,7 @@ function EntryForm({ setForms }) {
     data[date.getDay()] = data[date.getDay()] + 1; //increasing entries count by 1 on the day of the week
     dispatch(setWeekData(data));
     data = [...monthData];
-    data[date.getDate()] = data[date.getDate()] + 1; // increasing the count by 1 on the current month date
+    data[date.getDate()] = data[date.getDate()] ;
     dispatch(setMonthData(data));
     data = [...yearData];
     data[date.getMonth()] = data[date.getMonth()] + 1; // increasing the count by 1 for current year month
