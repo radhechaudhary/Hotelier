@@ -53,7 +53,7 @@ function Landing() {
             </g>
         </svg>
         <div className='z-10 flex flex-col md:w-auto w-[85%] gap-4'>
-            <p className='text-rose-500 text-xl font-bold'>Hotelier- Your digital register</p>
+            <p className='text-blue-500 text-xl font-bold'>Hotelier- Your digital register</p>
             <h1 className='font-bold z-10 md:text-6xl sm:text-4xl text-4xl '>A Leading Hotel Management System</h1>
             <p className='text-lg'>One Solution to replace all your registers</p>
         </div>

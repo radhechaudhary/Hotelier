@@ -131,7 +131,7 @@ app.post('/update-rooms',verifyTokenMiddleware, (req, res)=>{
 app.post('/data-submit', verifyTokenMiddleware, async(req,res)=>{{
     try{
         const now = new Date();
-        const formattedDate = now.toISOString().split("T")[0];
+        const formattedDate = now.toLocaleDateString('en-CA')
         const hours = String(now.getHours()).padStart(2, "0");
         const minutes = String(now.getMinutes()).padStart(2, "0");
         const currentTime = `${hours}:${minutes}`;

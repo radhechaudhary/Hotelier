@@ -20,7 +20,6 @@ function Entries() {
             }
         })
         .then((res)=>{
-          console.log(res.data.entries)
           setData(res.data.entries);
           setFilteredData(res.data.entries);
         })

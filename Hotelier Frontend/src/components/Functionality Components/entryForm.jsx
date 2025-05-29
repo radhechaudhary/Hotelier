@@ -33,7 +33,7 @@ function EntryForm({ setForms }) {
   const submitForm = (e) => {
     e.preventDefault();
     const now = new Date();
-    const formattedDate = now.toISOString().split("T")[0];
+    const formattedDate = now.toLocaleDateString('en-CA'); // YYYY-MM-DD format
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const currentTime = `${hours}:${minutes}`;
@@ -68,7 +68,7 @@ function EntryForm({ setForms }) {
     data[date.getDay()] = data[date.getDay()] + 1; //increasing entries count by 1 on the day of the week
     dispatch(setWeekData(data));
     data = [...monthData];
-    data[date.getDate()] = data[date.getDate()] ;
+    data[date.getDate()-1] = data[date.getDate()-1]+1 ;
     dispatch(setMonthData(data));
     data = [...yearData];
     data[date.getMonth()] = data[date.getMonth()] + 1; // increasing the count by 1 for current year month

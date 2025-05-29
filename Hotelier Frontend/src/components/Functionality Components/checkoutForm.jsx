@@ -18,7 +18,7 @@ function CheckoutForm({ setForms }) {
     members: 0,
     roomNo: 0,
     idNo: "",
-    bill: 0,
+    bill: '',
   });
 
   const submitForm = (e) => {
@@ -50,17 +50,30 @@ function CheckoutForm({ setForms }) {
     setRoomNo(e.target.value);
   };
 
-  useEffect(() => { //checking if the room is occupied
+  useEffect(() => {  //for filling the details when roomNo is entered
+
+    //checking if the room is occupied
     if (roomNo in occupiedRooms) {
       currentCustomers.map((customer)=>{
         if(customer.roomNo===roomNo){
+            const [year, month, day] = customer.entryDate.split('-').map(Number);
+            const localDate = new Date(year, month - 1, day); // month is 0-based
+            const date1 = localDate.getTime()
+            const date2=new Date();
+            const diffInMs= date2-date1;
+            const days= Math.floor(diffInMs/(1000 * 60 * 60 * 24));
+            const hrs=Math.floor((diffInMs-(days*60*60*24))/(1000 * 60 * 60));
+            var bill= days*customer.price;
+            if(hrs>2){
+              bill+=parseInt(customer.price);
+            }
             setFormData((prev) => { //setting the formData to  the data of customer staying in that room
-                return { ...prev, ...customer };
+                return { ...prev, ...customer, bill:bill };
             });
         }
       })     
     } else {
-      setFormData({ name: "", members: 0, roomNo: 0, idNo: "", bill: 0 }); //else remove the details
+      setFormData({ name: "", members: 0, roomNo: 0, idNo: "", bill: '' }); //else remove the details
     }
   }, [roomNo]);
 

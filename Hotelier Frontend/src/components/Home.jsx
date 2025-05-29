@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 function Home() {
   return (
-    <motion.div initial={{opacity:0}} animate={{opacity:1}} className='bg-blue-50 font-poppins'>
+    <motion.div initial={{opacity:0}} animate={{opacity:1}} className='bg-blue-100 font-poppins'>
         <Landing/>
     </motion.div>
   )

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 function Register() {
   return (
-    <div className='bg-blue-50 w-screen font-poppins'>
+    <div className='bg-blue-100 w-screen font-poppins'>
         <div className='relative h-screen text-gray-600 flex flex-col md:flex-row md:justify-around justify-center  gap-10 px-5 lg:px-32 lg:gap-28  items-center'>
             <img className='opacity-[0.08] absolute z-0 bottom-0 left-0 w-screen min-h-[300px]' src={monuments}/>
             
@@ -32,7 +32,7 @@ function Register() {
                 </g>
             </svg>
             <div className='z-10 flex flex-col md:w-auto w-[85%] gap-4'>
-                <p className='text-rose-500 text-xl font-bold'>Hotelier- Your digital register</p>
+                <p className='text-blue-500 text-xl font-bold'>Hotelier- Your digital register</p>
                 <h1 className='font-bold z-10 md:text-6xl sm:text-4xl text-4xl '>Join our family</h1>
                 <p className='text-lg'>One Solution to replace all your registers</p>
             </div>
