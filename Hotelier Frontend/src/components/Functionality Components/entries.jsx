@@ -52,7 +52,7 @@ function Entries() {
       setCurrentEntry(filteredData[index]);
       setOpenedCard(true);
     }
-    const headers=['Sr No', 'Name', 'Mobile', 'Room No', 'Members', 'Id no', 'Entry Date', 'EntryTime', 'OutDate', 'Out Time']
+    const headers=['Sr No', 'Name', 'Mobile', 'Room No', 'Members', 'Id no', 'Entry Date', 'EntryTime', 'OutDate', 'Out Time', ]
 
   return (
    <motion.div initial={{opacity:0}} animate={{opacity:1}} id="enteries" className="flex-1 bg-[url('/asfalt-dark.png')] md:rounded-tl-2xl flex-grow bg-blue-50 shadow-black shadow-md text-slate-700  ml-[0.5px] h-[calc(100vh-60px)] p-5 md:p-10 flex flex-col gap-7 items-center overflow-hidden">

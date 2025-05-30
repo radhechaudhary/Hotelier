@@ -7,6 +7,7 @@ import { createTransport } from "nodemailer";
 import bcrypt from 'bcryptjs';
 import jsonwebtoken from "jsonwebtoken"
 import verifyTokenMiddleware from "./verifyTokenMiddleware.js";
+import { types } from 'pg';
 
 const PORT=4000;
 const app=express();
@@ -36,6 +37,8 @@ const db=new pg.Client({  // creating database connection variables
     password: process.env.DATABASE_PASSWORD,
     port: process.env.DATABASE_PORT,
   });
+  types.setTypeParser(1082, val => val); // return DATE as string, e.g. "2025-05-30"
+  types.setTypeParser(1083, val => val); // return TIME as string, e.g. "02:30:00"
   db.connect(); //connecting to database
 
 
@@ -130,11 +133,14 @@ app.post('/update-rooms',verifyTokenMiddleware, (req, res)=>{
 
 app.post('/data-submit', verifyTokenMiddleware, async(req,res)=>{{
     try{
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('en-CA')
+        console.log(req.body.entryTime)
+        const localDate = new Date();
+        const formattedDate = localDate.toLocaleDateString('en-CA')
+        const now= new Date();
         const hours = String(now.getHours()).padStart(2, "0");
         const minutes = String(now.getMinutes()).padStart(2, "0");
         const currentTime = `${hours}:${minutes}`;
+        console.log(formattedDate)
         const result=await db.query("insert into costumers (user_id, name, mobile, room_no, entry_date, entry_time,  out_date, out_time, members, id_no) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
         [req.user.user_id, req.body.name, req.body.tel, req.body.roomNo, req.body.entryDate, req.body.entryTime, formattedDate, currentTime, req.body.members, req.body.idNo]   
         )
@@ -149,7 +155,9 @@ app.post('/data-submit', verifyTokenMiddleware, async(req,res)=>{{
 
 app.post("/get-data",verifyTokenMiddleware, async(req,res)=>{
     try{
-      const result=await db.query("Select * from costumers where user_id=$1",[req.user.user_id])
+      const result=await db.query("Select sr_no, name, mobile, room_no, members, id_no, entry_date, entry_time, out_date, out_time from costumers where user_id=$1",[req.user.user_id])
+      
+      console.log(result.rows[0].entry_date)
       res.json({entries:result.rows})
     }
     catch(err){
@@ -162,7 +170,14 @@ app.post("/change-staff", verifyTokenMiddleware, async(req, res)=>{
     const staff= req.body.staff;
     db.query('update users set staff=$1 where user_id =$2',[staff, req.user.user_id])
 })
-
+app.post("/update-report", verifyTokenMiddleware, (req, res)=>{
+  try{
+    db.query("update users set report=$1 where user_id=$2",[req.body, req.user.user_id])
+  }
+  catch(err){
+    console.log(err.message)
+  }
+})
 app.listen(PORT,()=>{
     console.log(`running on port ${PORT}`)
 })

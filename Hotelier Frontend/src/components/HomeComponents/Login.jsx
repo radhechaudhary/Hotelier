@@ -34,6 +34,7 @@ function Login() {
           localStorage.setItem("rooms", JSON.stringify(res.data.values.rooms));
           localStorage.setItem("hotel", res.data.values.hotel);
           if(Object.keys(res.data.values.report).lenght>0){
+            console.log(report)
             localStorage.setItem(
               "weekData",
               JSON.stringify(res.data.values.report.weekData)

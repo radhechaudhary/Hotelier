@@ -58,7 +58,7 @@ function Landing() {
             <p className='text-lg'>One Solution to replace all your registers</p>
         </div>
         <Login/>
-        <Link to='/signup' className='px-4 py-1 cursor-pointer bg-rose-500 active:bg-rose-600 active:scale-[0.95] text-white fixed bottom-5 right-5 rounded-xl'>Register</Link>
+        <Link to='/signup' className='z-[1000] px-4 py-1 cursor-pointer bg-rose-500 active:bg-rose-600 active:scale-[0.95] text-white fixed bottom-5 right-5 rounded-xl'>Register</Link>
     </div>
   )
 }
