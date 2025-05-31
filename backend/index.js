@@ -16,18 +16,17 @@ const corsOptions = {  //making  the  API domain restricted
   origin: "http://localhost:5173", // 
   optionsSuccessStatus: 200, // For legacy browser support
 };
-dotenv.config()
+dotenv.config() // for using environment variables
 
 app.use(cors(corsOptions));
 
-
-// const transporter=createTransport({
-//   service:'gmail',
-//   auth: {
-//     user: process.env.MY_GMAIL, // mail address to send mails
-//     pass: process.env.MY_GMAIL_PASSWORD, // Your email password or app password
-//   },
-// })
+const transporter=createTransport({  // create a transporter for sending mail
+  service:'gmail',
+  auth: {
+    user: process.env.MY_GMAIL, // mail address to send mails
+    pass: process.env.MY_GMAIL_PASSWORD, // Your email password or app password
+  },
+})
 app.use(cors())  // using cors
 
 const db=new pg.Client({  // creating database connection variables
@@ -86,27 +85,26 @@ app.post('/signup', async (req, res)=>{  // signup route
       const saltRounds = 10; // Higher rounds = more security but slower
       const hashedPassword = await bcrypt.hash(password, saltRounds);
       const user_id= `${new Date().getTime()}`
-      const arr=[];
-      const obj={}
+      const arr=[]; // for initialization of the rroms and staff column to avoid error
+      const obj={} // for initialization of report object to avoid errors
       const result= await db.query("insert into users (hotel, mobile, user_id,  password,  mail, address, rooms, report, staff) values($1,$2,$3,$4,$5,$6, $7, $8, $9) ",[hotel, mobile, user_id, hashedPassword, mail, address, arr, obj, arr]);
       const payload={
             user_id:user_id
         }
       const token= jsonwebtoken.sign(payload, process.env.SECRET_KEY);
       res.json({message:'success', user_id:user_id, token:token})
-    //   const mailOptions = {
-    //     from: 'radhechaudhary6398@gmail.comm', // Sender address
-    //     to: mail, // Recipient address
-    //     subject: 'Automated Email from user-regester', // Subject line
-    //     text: 'Hello!! Thankyou for connecting with us!! Hope the journey will be great!!', // Plain text body
-    //     html: '<p>Hello!!<b>Thankyou for connecting with us</b>Hope the journey will be great!!</p>', // HTML body (optional)
-    //   };
-    // transporter.sendMail(mailOptions, (error, info) => { // sendmail function to send mail
-    //   if (error) {
-    //     return console.log('Error occurred:', error);
-    //   }
-    //   console.log('Email sent:', info.response);
-    // });
+      const mailOptions = {
+        from: 'radhechaudhary6398@gmail.comm', // Sender address
+        to: mail, // Recipient address
+        subject: 'Automated Email from Hotelier', // Subject line
+        text: `Hello!! Thankyou for connecting with us!! Hope the journey will be great!! Your userId is ${user_id} `, // Plain text body
+        html: '<p>Hello!!<b>Thankyou for connecting with us</b>Hope the journey will be great!!</p>', // HTML body (optional)
+      };
+    transporter.sendMail(mailOptions, (error, info) => { // sendmail function to send mail
+      if (error) {
+        return console.log('Error occurred:', error);
+      }
+    });
     }
   }
   catch(err){
@@ -115,7 +113,7 @@ app.post('/signup', async (req, res)=>{  // signup route
   }
 })
 
-app.post('/verify-user', verifyTokenMiddleware, async (req, res)=>{
+app.post('/verify-user', verifyTokenMiddleware, async (req, res)=>{ // verify user for session authentiacation 
     const result= await db.query('select * from users where user_id = $1',[req.user.user_id]);
     if(result.rows.length>0){
         res.json({message:'success'})
@@ -125,22 +123,21 @@ app.post('/verify-user', verifyTokenMiddleware, async (req, res)=>{
     }
 })
 
-app.post('/update-rooms',verifyTokenMiddleware, (req, res)=>{
+app.post('/update-rooms',verifyTokenMiddleware, (req, res)=>{  // route to save updated rooms data from frontend to SQL
     db.query('update users set rooms=$1 where user_id=$2', [req.body.rooms, req.user.user_id])
 })
 
 
 
-app.post('/data-submit', verifyTokenMiddleware, async(req,res)=>{{
+app.post('/data-submit', verifyTokenMiddleware, async(req,res)=>{{ //Save customer Data from frontend to SQL
     try{
-        console.log(req.body.entryTime)
+      // findding date and time for checkout time details
         const localDate = new Date();
         const formattedDate = localDate.toLocaleDateString('en-CA')
         const now= new Date();
         const hours = String(now.getHours()).padStart(2, "0");
         const minutes = String(now.getMinutes()).padStart(2, "0");
         const currentTime = `${hours}:${minutes}`;
-        console.log(formattedDate)
         const result=await db.query("insert into costumers (user_id, name, mobile, room_no, entry_date, entry_time,  out_date, out_time, members, id_no) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
         [req.user.user_id, req.body.name, req.body.tel, req.body.roomNo, req.body.entryDate, req.body.entryTime, formattedDate, currentTime, req.body.members, req.body.idNo]   
         )
@@ -153,11 +150,9 @@ app.post('/data-submit', verifyTokenMiddleware, async(req,res)=>{{
   }
 })
 
-app.post("/get-data",verifyTokenMiddleware, async(req,res)=>{
+app.post("/get-data",verifyTokenMiddleware, async(req,res)=>{ // route to send all the entries of the current user to it
     try{
       const result=await db.query("Select sr_no, name, mobile, room_no, members, id_no, entry_date, entry_time, out_date, out_time from costumers where user_id=$1",[req.user.user_id])
-      
-      console.log(result.rows[0].entry_date)
       res.json({entries:result.rows})
     }
     catch(err){
@@ -166,11 +161,12 @@ app.post("/get-data",verifyTokenMiddleware, async(req,res)=>{
     }
 })
 
-app.post("/change-staff", verifyTokenMiddleware, async(req, res)=>{
+app.post("/change-staff", verifyTokenMiddleware, async(req, res)=>{  // Route for updating staff in backend
     const staff= req.body.staff;
     db.query('update users set staff=$1 where user_id =$2',[staff, req.user.user_id])
 })
-app.post("/update-report", verifyTokenMiddleware, (req, res)=>{
+
+app.post("/update-report", verifyTokenMiddleware, (req, res)=>{ // Route for Updating Report in frontEnd
   try{
     db.query("update users set report=$1 where user_id=$2",[req.body, req.user.user_id])
   }
